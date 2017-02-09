@@ -6,10 +6,11 @@ var run = function() {
     function arrayTest() {
         var string = "为知笔记是最好用的笔记软件";
         //create new array
-        var array = new Array();
-        for (var i=0; i<string.length; i++) {
-            array.push(string.charAt(i));
-        }
+        // var array = new Array();
+        // for (var i=0; i<string.length; i++) {
+        //     array.push(string.charAt(i));
+        // }
+        var array = Array.from(string);
         console.log(array);
 
         //delete array item
@@ -48,25 +49,25 @@ var run = function() {
         //login button
         var button = document.createElement('button');
         button.id = 'submit';
-        button.setAttribute('onclick','login()');
+        // button.setAttribute('onclick','login()');
         var text = document.createTextNode('登录');
         button.appendChild(text);
         document.body.appendChild(button);
-    }
-}
-
-function login() {
-    var userName = document.querySelector('#username');
-    var password = document.querySelector('#password');
-    //
-    if (userName.value.length == 0) {
-        alert('请输入用户名！');
-        userName.focus();
-    } else if (password.value.length == 0) {
-        alert('请输入密码！');
-        password.focus();
-    } else {
-        alert('正在登录...');
+        //
+        button.addEventListener('click', function () {
+            var userName = document.querySelector('#username');
+            var password = document.querySelector('#password');
+            //
+            if (userName.value.length == 0) {
+                alert('请输入用户名！');
+                userName.focus();
+            } else if (password.value.length == 0) {
+                alert('请输入密码！');
+                password.focus();
+            } else {
+                alert('正在登录...');
+            }
+        });
     }
 }
 
