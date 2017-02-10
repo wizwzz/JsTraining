@@ -1,7 +1,11 @@
 function setTimer(callback, t) {
     return setTimeout(function () {
-        callback();
-        setTimer(callback,t);
+        // callback();
+        // if (!stop) {
+        //     setTimer(callback,t);
+        // }
+        var timerId = setTimer(callback, t);
+        callback(timerId);
     }, t);
 }
 
@@ -11,26 +15,72 @@ function testTimer() {
     }, 2000);
 }
 
-
-(function testInterval() {
+//////////////////--------------用setTimer实现--------------//////////////////////
+function newInterval() {
     var counter = 0;
-    var interval = setTimer(function () {
+    stop = false;
+    var interval = setTimer(function (timerId) {
         console.log(new Date().valueOf());
+        counter++;
+        //
+        // console.log(timerId);
+        //
+        // Timeout {
+        //     _called: false,
+        //     _idleTimeout: 1000,
+        //     _idlePrev: 
+        //     TimersList {
+        //         _idleNext: [Circular],
+        //         _idlePrev: [Circular],
+        //         _timer: Timer { '0': [Function: listOnTimeout], _list: [Circular] },
+        //         _unrefed: false,
+        //         msecs: 1000 },
+        //     _idleNext: 
+        //     TimersList {
+        //         _idleNext: [Circular],
+        //         _idlePrev: [Circular],
+        //         _timer: Timer { '0': [Function: listOnTimeout], _list: [Circular] },
+        //         _unrefed: false,
+        //         msecs: 1000 },
+        //     _idleStart: 1289,
+        //     _onTimeout: [Function],
+        //     _timerArgs: undefined,
+        //     _repeat: null
+        //  }
+        //
+        if (counter > 10) {
+            console.log('clear Interval');
+            clearTimeout(timerId);
+        }
+        console.log(new Date().valueOf() + '  --  interval ' + counter + ' over.');
+    }, 1000);
+}
+
+
+//////////////////--------------原例子--------------//////////////////////
+function testInterval() {
+    var counter = 0;
+    var interval = setInterval(function () {
+        console.log(new Date().valueOf());
+        //
+        // console.log(interval);
+        //
+        // Timeout {
+        //     _called: true,
+        //     _idleTimeout: 1000,
+        //     _idlePrev: null,
+        //     _idleNext: null,
+        //     _idleStart: 1399,
+        //     _onTimeout: [Function],
+        //     _timerArgs: undefined,
+        //     _repeat: 1000 }   
+        //
+
         counter++;
         if (counter > 10) {
             console.log('clear Interval');
-            //how to clear
+            clearInterval(interval);
         }
-        // 下面这是一个闭包，尝试屏蔽掉这一段代码，对比看结果
-        // (function () {
-        //     var i, j, k;
-        //     for (i = 0; i < 99999; i++) {
-        //         for (j = 0; j < 39999; j++) {
-        //             k = i * j;
-        //         }
-        //     }
-        // })()
-       // 闭包结束
-        console.log(new Date().valueOf() + '  --  interval ' + counter + ' over.')
+        console.log(new Date().valueOf() + '  --  interval ' + counter + ' over.');
     }, 1000);
-})();
+}
