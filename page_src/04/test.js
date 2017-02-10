@@ -63,23 +63,50 @@ var run = function() {
                 alert('请输入密码！');
                 password.focus();
             } else {
-                jQuery.ajax('/api/login',{ 
-                                data:{ user_id:userName.value, password:password.value},
-                                method:'POST',
-                                dataType:'xml',
-                                complete:function(XHR, textStatus){
-                                    console.log('in');
-                                    console.log(XHR);
-                                    var data = JSON.parse(XHR.responseText);
-                                    console.log(data);
-                                    console.log(data.toString());
-                                    var code = data.code;
-                                    var message = data.message;
-                                    alert(message);
-                                }
-                            });
-                }
+                //jQuery ajax
+                ajaxRequest(userName.value, password.value);
+                //js
+                // jsRequest(userName.value, password.value);
+            }
         });
     }
 }
 
+function ajaxRequest(username, password) {
+     jQuery.ajax('/api/login',{ 
+                                data:{user_id:username, password:password},
+                                method:'POST',
+                                dataType:'json',
+                                complete:function(XHR, textStatus){
+                                    console.log(XHR.valueOf());
+                                    handleResponseText(XHR.responseText);
+                                }
+                            });
+}
+
+
+function jsRequest(username, password){
+    var request = new XMLHttpRequest();
+    request.open('POST', '/api/login', true);
+    // 用字符串传入send为什么不行？
+    // var sendText = "user_id="+username+"&password="+password;
+    //
+    var data = new FormData();
+    data.append('user_id', username);
+    data.append('password', password);
+    console.log(data);
+    request.send(data);
+    //
+    request.onreadystatechange = function() {
+        if (this.readyState == 4) {
+            console.log(this.responseText);
+            handleResponseText(this.responseText);
+        }
+    };
+}
+
+function handleResponseText(text) {
+    var data = JSON.parse(text);
+    var message = data.message;
+    alert(message);
+}
