@@ -74,7 +74,7 @@ var run = function() {
 
 function ajaxRequest(username, password) {
      jQuery.ajax('/api/login',{ 
-                                data:{user_id:username, password:password},
+                                data:{'user_id':username, 'password':password},
                                 method:'POST',
                                 dataType:'json',
                                 complete:function(XHR, textStatus){

@@ -1,9 +1,5 @@
 function setTimer(callback, t) {
     return setTimeout(function () {
-        // callback();
-        // if (!stop) {
-        //     setTimer(callback,t);
-        // }
         var timerId = setTimer(callback, t);
         callback(timerId);
     }, t);
