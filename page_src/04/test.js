@@ -63,10 +63,22 @@ var run = function() {
                 alert('请输入密码！');
                 password.focus();
             } else {
-                // alert('正在登录...');
-                var htmlobj=$.ajax({url:'/api/login', async:false, data:'user_id=waa@wiz.cn&password=aaa', Method:'POST'});
-                console.log(htmlobj);
-            }
+                jQuery.ajax('/api/login',{ 
+                                data:{ user_id:userName.value, password:password.value},
+                                method:'POST',
+                                dataType:'xml',
+                                complete:function(XHR, textStatus){
+                                    console.log('in');
+                                    console.log(XHR);
+                                    var data = JSON.parse(XHR.responseText);
+                                    console.log(data);
+                                    console.log(data.toString());
+                                    var code = data.code;
+                                    var message = data.message;
+                                    alert(message);
+                                }
+                            });
+                }
         });
     }
 }

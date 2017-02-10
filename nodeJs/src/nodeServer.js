@@ -4,9 +4,9 @@ const port = 3000;
 var express = require('express');
 var proxy = require('http-proxy-middleware');
 var app = express();
-//
-app.use('/api', proxy({target: 'http://note.wiz.cn', changeOrigin: true}));
-app.use('/wizas', proxy({target: 'http://note.wiz.cn', changeOrigin: true}));
+
+app.use('/api', proxy({ target: 'http://note.wiz.cn', changeOrigin: true }));
+app.use('/wizas', proxy({ target: 'http://note.wiz.cn', changeOrigin: true }));
 //
 app.use(express.static(__dirname + '/../../page_src/04'));
 console.log('Web Path: ' + __dirname + '/../../page_src/04');
