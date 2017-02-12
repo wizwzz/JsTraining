@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <script type="text/javascript" src="test.js"></script>
+        <script type="text/javascript" src="jquery-3.1.1.js"></script>
+        <style type="text/css">
+            body{ text-align:center}
+            .loginInput{margin:0 auto; padding:5px, 0px, 0px; width:400px; height:40px; border:1px;}
+            .pos_left{position:relative;left: -8px}
+            .pos_right{position:relative;left: 8px}
+            .bizNode{line-height: 30px; color: #353c47; font-size: 22px; font-weight: bold; font-family: Monospace; background-color:#448aff }
+            .groupNode{line-height: 24px; color: #353c47; font-size: 20px}
+        </style>
+    </head>
+    <body onload="run()">
+        <div id="loginLayer">
+            <div style="height: 40px"></div>
+            <div class="loginInput">
+                <label for="username">用户名：</label>
+                <input id="username" type="text"></input>
+            </div>
+            <div class="loginInput">
+                <label class="pos_left" for="password">密码：</label>
+                <input class="pos_right" id="password" type="password"></input>
+            </div>
+            <button style="margin: 0 auto; padding: 5px, 0px, 0px; width: 60px; height: 30px; 
+                        background-color: #448aff; border-color: #ffffff;" id="submit">登录</button>
+        </div>
+    </body>
+</html>
