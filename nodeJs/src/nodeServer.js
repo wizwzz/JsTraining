@@ -8,8 +8,8 @@ var app = express();
 app.use('/api', proxy({ target: 'http://note.wiz.cn', changeOrigin: true }));
 app.use('/wizas', proxy({ target: 'http://note.wiz.cn', changeOrigin: true }));
 //
-app.use(express.static(__dirname + '/../../page_src/04'));
-console.log('Web Path: ' + __dirname + '/../../page_src/04');
+app.use(express.static(__dirname + '/../../page_src/05'));
+console.log('Web Path: ' + __dirname + '/../../page_src/05');
 
 app.listen(port, hostname, function () {
     console.log(`Server running at http://${hostname}:${port}/`);

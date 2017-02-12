@@ -1,3 +1,4 @@
+//可以放在html的head中，一般不这么写   <script language='javascript' src='jquery-3.1.1.js'></script>
 document.write("<script language='javascript' src='jquery-3.1.1.js'></script>");
 //
 var run = function() {
@@ -64,9 +65,9 @@ var run = function() {
                 password.focus();
             } else {
                 //jQuery ajax
-                ajaxRequest(userName.value, password.value);
+                // ajaxRequest(userName.value, password.value);
                 //js
-                // jsRequest(userName.value, password.value);
+                jsRequest(userName.value, password.value);
             }
         });
     }
@@ -88,14 +89,16 @@ function ajaxRequest(username, password) {
 function jsRequest(username, password){
     var request = new XMLHttpRequest();
     request.open('POST', '/api/login', true);
-    // 用字符串传入send为什么不行？
-    // var sendText = "user_id="+username+"&password="+password;
-    //
+    //1  
     var data = new FormData();
     data.append('user_id', username);
     data.append('password', password);
     console.log(data);
     request.send(data);
+    // 2
+    // request.setRequestHeader("Content-type","application/x-www-form-urlencoded");   //
+    // var sendText = "user_id="+username+"&password="+password;
+    // request.send(sendText);
     //
     request.onreadystatechange = function() {
         if (this.readyState == 4) {

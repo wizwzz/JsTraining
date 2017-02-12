@@ -73,11 +73,13 @@ function getGroupList(token) {
                     console.log(bizList);
                     console.log(groupsList);
 
-                    var bizGuid, bizName, groupName, groupGuid,eachBiz, eachGroup;
+                    var bizGuid, bizName, groupName, groupGuid,eachBiz, eachGroup, counter;
                     var eachArray = new Array();
                     var result = new Array();
                     var div;
                     for(var i=0; i<bizList.length; i++) {
+                        //
+                        counter = 0;
                         eachBiz = bizList[i];
 
                         console.log(eachBiz);
@@ -88,17 +90,22 @@ function getGroupList(token) {
 
                         /////////// element 的 id 如果以数字开头，invalid////////////
                         div = addDiv(document.body, "id"+bizGuid);
-                        addBizNode(div, bizName, "id"+bizGuid);
-                    }
-
+                        div = addBizNode(div, bizName);
+                        //
                         for (var j=0; j<groupsList.length; j++) {
                             eachGroup = groupsList[j];
-                            bizGuid = eachGroup['bizGuid'];
-                            groupName = eachGroup['kbName'];
-                            groupGuid = eachGroup['kbGuid'];
-                            div = document.querySelector("div#id"+bizGuid);
-                            addGroupNode(div, groupName, "id"+groupGuid);
+                            if (bizGuid === eachGroup['bizGuid']) {
+                                groupName = eachGroup['kbName'];
+                                addGroupNode(div, groupName);
+                                counter++;
+                            }
                         }
+                        if (!counter) {
+                            /////////////////无群组的biz不显示
+                            div.setAttribute("style", "display: none");
+                        }
+
+                    }
                         //
                 });
                 //
@@ -161,7 +168,8 @@ function addBizNode(superNode, text, nodeId){
         return;
     var element = document.createElement('div');
     element.innerText = text;
-    element.id = nodeId;
+    if(nodeId)
+        element.id = nodeId;
     element.setAttribute("class", "bizNode");
     superNode.appendChild(element);
     return element;
@@ -173,8 +181,9 @@ function addGroupNode(superNode, text, nodeId){
         return;
     var element = document.createElement('div');
     element.innerText = text;
-    element.id = nodeId;
-    element.setAttribute("class", "groupNode");
+    if (nodeId) 
+        element.id = nodeId;
+    element.setAttribute("class", "bizNode groupNode");
     superNode.appendChild(element);
     return element;
 }
