@@ -1,4 +1,7 @@
 
+var bizList;
+var groupsList;
+
 var run = function() {
     addLoginListener();
 }
@@ -8,6 +11,7 @@ function addLoginListener() {
     var button = document.querySelector("#submit");
     if (button) {
         button.addEventListener('click', function () {
+            //
             button.setAttribute("disabled", true);
             //
             var userName = document.querySelector('#username');
@@ -32,123 +36,103 @@ function addLoginListener() {
 ////////////////////login请求/////////////////////
 function wizLogin(username, password) {
     var params = {'user_id':username, 'password':password};
-    excuteHTTPRequest('/api/login', 'POST', params, function(XHR, textStatus){
-            var button = document.querySelector("#submit");
-            button.removeAttribute("disabled");
-            handleResponse(XHR, function(data){
-                if (data.token) {
-                    //
-                    document.querySelector("div#loginLayer").setAttribute("style","display:none");
-                    document.body.setAttribute("style","text-align:left");
-                    //
-                    getGroupList(data.token);
-                }
-            }, function(data){
-                if(data.message) {
-                    alert(data.message);
-                }
-            });
+    $.ajax('/api/login', {
+            data: params, 
+            method: "POST"
+    }).then(function(data) {
+        console.log(data);
+        document.querySelector("#submit").removeAttribute("disabled");
+        //
+        if (data.code == 200) {
+            document.querySelector("div#loginLayer").setAttribute("style","display:none");
+            document.body.setAttribute("style","text-align:left");
+            //
+            didLoginWiz(data.token);
+        } else {
+            alert(data.message);
+        }        
+    }).catch(function(error) {
+        console.log(error);
+        document.querySelector("#submit").removeAttribute("disabled");
+        alert(error.statusText + '('+ error.status +')');
     });
+
+}
+
+function didLoginWiz(token){
+    if (!token) {
+        return;
+    }
+    bizList = null;
+    groupsList = null;
+    getBizList(token);
+    getGroupList(token);
 }
 
 
-// 获取团队列表 
-// /wizas/a/biz/user_bizs?api_version=6&token=
-// 获取群组列表 
-// /wizas/a/groups?api_version=6&token=
+function getBizList(token){
+    var params = {'api_version':6, 'token':token};
+    $.ajax('/wizas/a/biz/user_bizs', {
+        method: "GET",
+        data: params
+    }).then(function(data){
+        if (data.return_code == 200) {
+            bizList = data['result'];
+            reloadMainDom(bizList, groupsList);
+        } else {
+            if(data.return_message) {
+                alert(data.return_message);
+            }
+        }
+    }).catch(function(error){
+        alert(error.statusText + '('+ error.status +')');
+    });
+}
+
 function getGroupList(token) {
     var params = {'api_version':6, 'token':token};
-    //
-    excuteHTTPRequest('/wizas/a/biz/user_bizs', 'GET', params, function (XHR, textStatus){
-        //
-        handleResponse(XHR, function(bizData){
-            //
-            excuteHTTPRequest('/wizas/a/groups', 'GET', params, function(XHR, textStatus){
-                console.log(XHR);
-                console.log(textStatus);
-                //
-                handleResponse(XHR, function(groupData){
-                    var bizList = bizData['result'];
-                    var groupsList = groupData['group_list'];
-                    console.log(bizList);
-                    console.log(groupsList);
-
-                    var bizGuid, bizName, groupName, groupGuid,eachBiz, eachGroup, counter;
-                    var eachArray = new Array();
-                    var result = new Array();
-                    var div;
-                    for(var i=0; i<bizList.length; i++) {
-                        //
-                        counter = 0;
-                        eachBiz = bizList[i];
-
-                        console.log(eachBiz);
-                        bizGuid = eachBiz['biz_guid'];  
-                        bizName = eachBiz['biz_name'];                      
-                        if (!bizGuid) 
-                            continue;
-
-                        /////////// element 的 id 如果以数字开头，invalid////////////
-                        div = addDiv(document.body, "id"+bizGuid);
-                        div = addBizNode(div, bizName);
-                        //
-                        for (var j=0; j<groupsList.length; j++) {
-                            eachGroup = groupsList[j];
-                            if (bizGuid === eachGroup['bizGuid']) {
-                                groupName = eachGroup['kbName'];
-                                addGroupNode(div, groupName);
-                                counter++;
-                            }
-                        }
-                        if (!counter) {
-                            /////////////////无群组的biz不显示
-                            div.setAttribute("style", "display: none");
-                        }
-
-                    }
-                        //
-                });
-                //
-            });
-        })
-    });
+    $.ajax('/wizas/a/groups', {
+            method: "GET",
+            data: params
+    }).then(function(data){
+        if (data.return_code == 200) {
+            var groupsList = data['group_list'];
+            reloadMainDom(bizList, groupsList);
+        } else {
+            if(data.return_message) {
+                alert(data.return_message);
+            }
+        }
+    }).catch();
 }
 
-function excuteHTTPRequest(url, methtodName, params, completeHander) {
-        $.ajax( url,{
-                        data: params,
-                        method: methtodName,
-                        complete:function(XHR, textStatus) {
-                            if(completeHander)
-                                completeHander(XHR, textStatus);
-                        }
-                    });
-}
 
-////////////////////////处理response////////////////////////////
-function handleResponse(xmlhttp, successCallback, failureCallback) {
-    //
-    console.log(xmlhttp.status);
-    if (xmlhttp.status == 200) {
-            var data = xmlhttp.responseText;
-            if(typeof data == 'string') {
-                try {
-                    data = JSON.parse(data);
-                } catch (error) {
-                    console.log(error);
-                    return;
-                }
-            }
-            console.log(data);
-            if (data['code'] == 200 || data['return_code'] == 200) {
-                if (successCallback)
-                    successCallback(data);                
-            } else {
-                if (failureCallback)
-                    failureCallback(data);
-            }
-    } else {
-        alert(xmlhttp.statusText+".("+xmlhttp.status+")");
+function reloadMainDom(bizList, groupsList) {
+    if (!bizList || !groupsList) {
+        return;
+    }
+    console.log(bizList);
+    console.log(groupsList);
+    var bizGuid, bizName, eachBiz, eachGroup,groupName, bizDiv;
+    for (var i=0; i<bizList.length; i++) {
+        eachBiz = bizList[i];
+        bizGuid = eachBiz['biz_guid'];  
+        bizName = eachBiz['biz_name'];
+        addBizNode(document.body, bizName, "id_"+bizGuid);
+    }
+    //add Personal Groups
+    addBizNode(document.body, "个人群组", "id_personalBizGuid");
+
+    for (var j=0; j<groupsList.length; j++) {
+        eachGroup = groupsList[j];
+        bizGuid = eachGroup['bizGuid'];
+        if (!bizGuid){
+            bizGuid = "personalBizGuid";
+        }
+        groupName = eachGroup['kbName'];
+        bizDiv = document.querySelector('div#id_'+bizGuid);//$('.#id'+bizGuid);
+        addGroupNode(bizDiv, groupName);
+        bizDiv.setAttribute("style", "display:block");
     }
 }
 
@@ -162,8 +146,7 @@ function addDiv(superNode, nodeId){
     return div;
 }
 
-function addBizNode(superNode, text, nodeId){
-    console.log(superNode);
+function addBizNode(superNode, text, nodeId) {
     if (!superNode)
         return;
     var element = document.createElement('div');
@@ -171,12 +154,12 @@ function addBizNode(superNode, text, nodeId){
     if(nodeId)
         element.id = nodeId;
     element.setAttribute("class", "bizNode");
+    element.setAttribute("style", "display: none");
     superNode.appendChild(element);
     return element;
 }
 
-function addGroupNode(superNode, text, nodeId){
-    console.log(superNode);
+function addGroupNode(superNode, text, nodeId) {
     if (!superNode)
         return;
     var element = document.createElement('div');

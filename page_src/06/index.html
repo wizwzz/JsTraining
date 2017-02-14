@@ -7,17 +7,17 @@
     </head>
     <body onload="run()">
         <div id="loginLayer">
-            <div style="height: 40px"></div>
             <div class="loginInput">
                 <label for="username">用户名：</label>
                 <input id="username" type="text"></input>
             </div>
             <div class="loginInput">
-                <label class="pos_left" for="password">密码：</label>
-                <input class="pos_right" id="password" type="password"></input>
+                <label for="password">密码：</label>
+                <input id="password" type="password"></input>
             </div>
-            <button style="margin: 0 auto; padding: 5px, 0px, 0px; width: 60px; height: 30px; 
-                        background-color: #448aff; border-color: #ffffff;" id="submit">登录</button>
+            <div class="loginInput">
+                <button id="submit">登录</button>
+            </div>
         </div>
     </body>
 </html>
