@@ -4,6 +4,7 @@ var groupsList;
 
 var run = function() {
     addLoginListener();
+    // wizLogin("wzz@wiz.cn", "wzzwzz");
 }
 
 //////////////////////login 按钮/////////////////////
@@ -27,6 +28,7 @@ function addLoginListener() {
                 password.focus();
             } else {
                 //jQuery ajax
+                // button.setAttribute("class", "");
                 wizLogin(userName.value, password.value);
             }
         });
@@ -35,6 +37,10 @@ function addLoginListener() {
 
 ////////////////////login请求/////////////////////
 function wizLogin(username, password) {
+    //
+    $('div.loading').fadeIn();
+    $('div.loginLayer').fadeOut(2000);
+    //
     var params = {'user_id':username, 'password':password};
     $.ajax('/api/login', {
             data: params, 
@@ -48,11 +54,16 @@ function wizLogin(username, password) {
             document.body.setAttribute("style","text-align:left");
             //
             didLoginWiz(data.token);
+            $('div.loading').fadeOut(1000);
         } else {
+            $('div.loading').fadeOut(1000);
+            $('div.loginLayer').fadeIn();
             alert(data.message);
         }        
     }).catch(function(error) {
         console.log(error);
+        $('div.loading').fadeOut(1000);
+        $('div.loginLayer').fadeIn();
         document.querySelector("#submit").removeAttribute("disabled");
         alert(error.statusText + '('+ error.status +')');
     });
@@ -111,6 +122,8 @@ function reloadMainDom(bizList, groupsList) {
     if (!bizList || !groupsList) {
         return;
     }
+    var div = document.createElement('div');
+    document.body.appendChild(div);
     console.log(bizList);
     console.log(groupsList);
     var bizGuid, bizName, eachBiz, eachGroup,groupName, bizDiv;
@@ -118,11 +131,11 @@ function reloadMainDom(bizList, groupsList) {
         eachBiz = bizList[i];
         bizGuid = eachBiz['biz_guid'];  
         bizName = eachBiz['biz_name'];
-        addBizNode(document.body, bizName, "id_"+bizGuid);
+        addBizNode(div, bizName, "id_"+bizGuid);
     }
     //add Personal Groups
-    addBizNode(document.body, "个人群组", "id_personalBizGuid");
-
+    addBizNode(div, "个人群组", "id_personalBizGuid");
+    //
     for (var j=0; j<groupsList.length; j++) {
         eachGroup = groupsList[j];
         bizGuid = eachGroup['bizGuid'];
@@ -130,10 +143,12 @@ function reloadMainDom(bizList, groupsList) {
             bizGuid = "personalBizGuid";
         }
         groupName = eachGroup['kbName'];
-        bizDiv = document.querySelector('div#id_'+bizGuid);//$('.#id'+bizGuid);
+        bizDiv = document.querySelector('dl#id_'+bizGuid);//$('.#id'+bizGuid);
+        console.log(bizDiv);
         addGroupNode(bizDiv, groupName);
         bizDiv.setAttribute("style", "display:block");
     }
+    $('.groups').find('dt').prepend(`<img src="img_rightArrow.png">`);
 }
 
 
@@ -149,24 +164,47 @@ function addDiv(superNode, nodeId){
 function addBizNode(superNode, text, nodeId) {
     if (!superNode)
         return;
-    var element = document.createElement('div');
-    element.innerText = text;
+    var dl = document.createElement('dl');
+    dl.setAttribute("class", "groups");
+    dl.setAttribute("style", "display: none");
     if(nodeId)
-        element.id = nodeId;
-    element.setAttribute("class", "bizNode");
-    element.setAttribute("style", "display: none");
-    superNode.appendChild(element);
-    return element;
+        dl.id = nodeId;
+    superNode.appendChild(dl);
+    //
+    var dt = document.createElement('dt');
+    dt.setAttribute("class", "groups");
+    //
+    dt.innerText = text;
+    dl.appendChild(dt);
+    dt.addEventListener('click', hideOrShowGroupsList);
 }
 
 function addGroupNode(superNode, text, nodeId) {
     if (!superNode)
         return;
-    var element = document.createElement('div');
-    element.innerText = text;
+    var dd = document.createElement('dd');
+    dd.innerText = text;
+    dd.setAttribute("class", "groups hideMe");
     if (nodeId) 
-        element.id = nodeId;
-    element.setAttribute("class", "bizNode groupNode");
-    superNode.appendChild(element);
-    return element;
+        dd.id = nodeId;
+    superNode.appendChild(dd);
+}
+
+
+function hideOrShowGroupsList()
+{
+    if ($(this).parent().find('dd').hasClass("showMe")) {
+        $(this).parent().find('dd').removeClass("showMe");
+        $(this).parent().find('dd').addClass("hideMe");
+        $(this).parent().find('img').removeClass("showGroups");
+        $(this).parent().find('img').addClass("hideGroups");
+    } else if ($(this).parent().find('dd').hasClass("hideMe")) {
+        $(this).parent().find('dd').removeClass("hideMe");
+        $(this).parent().find('dd').addClass("showMe");
+        $(this).parent().find('img').removeClass("hideGroups");
+        $(this).parent().find('img').addClass("showGroups");
+    } else {
+        $(this).parent().find('dd').addClass("showMe");
+        $(this).parent().find('img').addClass("showGroups");
+    }
 }
