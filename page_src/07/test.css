@@ -1,0 +1,192 @@
+.body
+{ 
+    text-align:center;
+}
+
+#loginLayer
+{
+    margin:100px auto; 
+    width: 400px; 
+}
+#submit
+{
+    text-align: center; 
+    width: 200px; 
+    height: 30px;
+    background-color: #448aff; 
+    border-radius: 5px;
+    border-width: 0px;
+    color: #ffffff;
+}
+
+#loginTable
+{
+    width: auto;
+    margin: auto;
+}
+#loginTable tr
+{
+    line-height: 45px;
+}
+dt.groups
+{
+    display: inline-flex;
+    line-height: 30px; 
+    color: #353c47; 
+    font-size: 22px; 
+    font-weight: bold; 
+    font-family: Monospace;
+}
+
+img#arrow
+{
+    display: inline-block;
+    position: relative;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    margin: auto;
+}
+img#arrow.showGroups
+{
+    animation: showGroups 0.5s;
+    -moz-animation: showGroups 0.5s; /* Firefox */
+    -webkit-animation: showGroups 0.5s; /* Safari and Chrome */
+    -o-animation: showGroups 0.5s; /* Opera */
+    animation-fill-mode: forwards;
+}
+img#arrow.hideGroups
+{
+    animation: hideGroups 0.5s;
+    -moz-animation: hideGroups 0.5s; /* Firefox */
+    -webkit-animation: hideGroups 0.5s; /* Safari and Chrome */
+    -o-animation: hideGroups 0.5s; /* Opera */
+    animation-fill-mode: forwards;
+}
+
+dd.groups
+{
+    display: inline-block;
+    line-height: 24px; 
+    color: #353c47; 
+    font-size: 20px; 
+    font-weight: normal; 
+    font-family: Serif; 
+}
+dd.groups.hideMe
+{
+    display: none;
+}
+dd.groups.showMe.allInOneLine
+{
+    display: inline-block;
+}
+dd.groups.showMe
+{
+    display: block;
+}
+
+@keyframes showGroups
+{
+0%   {transform: rotate(0deg);}
+100% {transform: rotate(90deg);}
+}
+
+@-moz-keyframes showGroups /* Firefox */
+{
+0%   {-moz-transform: rotate(0deg);}
+100% {-moz-transform: rotate(90deg);}
+}
+
+@-webkit-keyframes showGroups /* Safari and Chrome */
+{
+0%   {transform: rotate(0deg);}
+100% {transform: rotate(90deg);}
+}
+
+@-o-keyframes showGroups /* Opera */
+{
+0%   {-o-transform: rotate(0deg);}
+100% {-o-transform: rotate(90deg);}
+}
+
+@keyframes hideGroups
+{
+0%   {transform: rotate(90deg);}
+100% {transform: rotate(0deg);}
+}
+
+@-moz-keyframes hideGroups /* Firefox */
+{
+0%   {-moz-transform: rotate(90deg);}
+100% {-moz-transform: rotate(0deg);}
+}
+
+@-webkit-keyframes hideGroups /* Safari and Chrome */
+{
+0%   {-webkit-transform: rotate(90deg);}
+100% {-webkit-transform: rotate(0)deg;}
+}
+
+@-o-keyframes hideGroups /* Opera */
+{
+0%   {-o-transform: rotate(90deg);}
+100% {-o-transform: rotate(0deg);}
+}
+
+.loading {
+    display: none;
+}
+.loading.active {
+    display: block;
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    background-color: rgba(255, 255, 255, 0.5);
+}
+
+.spinner {
+    width: 60px;
+    height: 60px;
+
+    position: relative;
+    margin: 150px auto;
+}
+
+.double-bounce1, .double-bounce2{
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    background-color: #448aff;
+    opacity: 0.6;
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+.double-bounce1.active, .double-bounce2.active
+{
+    -webkit-animation: bounce 2.0s infinite ease-in-out;
+    animation: bounce 2.s infinite ease-in-out;
+}
+.double-bounce2 {
+    -webkit-animation-delay: -1.0s;
+    animation-delay: -0.1s;
+}
+
+@-webkit-keyframes bounce {
+    0%, 100% { -webkit-transform: scale(0.0);}
+    50% {-webkit-transform: scale(1.0);}
+}
+
+@keyframes bounce {
+     0%, 100% {
+        transform: scale(0.0);
+        -webkit-transform: scale(0.0);
+    } 50% {
+        transform: scale(1.0);
+        -webkit-transform: scale(1.0);
+    }
+}
