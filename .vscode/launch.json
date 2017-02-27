@@ -9,7 +9,7 @@
             "type": "node",
             "request": "launch",
             "name": "启动程序",
-            "program": "${workspaceRoot}/nodeJs/src/nodeServer.js",
+            "program": "${workspaceRoot}/nodeJs/src/reader/reader.js",
             // "program": "${workspaceRoot}/page_src/04/timer.js",
             "cwd": "${workspaceRoot}"
         }

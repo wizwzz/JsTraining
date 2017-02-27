@@ -209,10 +209,20 @@ function hideOrShowGroupsList()
     } else if (dl.find('dd').hasClass("hideMe")) {
         dl.find('dd').removeClass("hideMe");
         dl.find('dd').addClass("showMe");
+        if (document.body.clientWidth > 500) {
+            dl.find('dd').addClass("allInOneLine");
+        } else {
+            dl.find('dd').removeClass("allInOneLine");
+        }
         dl.find('img').removeClass("hideGroups");
         dl.find('img').addClass("showGroups");
     } else {
         dl.find('dd').addClass("showMe");
+        if (document.body.clientWidth > 500) {
+            dl.find('dd').addClass("allInOneLine");
+        } else {
+            dl.find('dd').removeClass("allInOneLine");
+        }
         dl.find('img').addClass("showGroups");
     }
 };
